@@ -33,6 +33,14 @@
   --blob-2: oklch(0.9 0.15 120 / 0.45);
   --blob-3: oklch(0.85 0.09 190 / 0.4);
   --grid-line: oklch(0.3 0.06 155 / 0.06);
+
+  --lg-tint: oklch(1 0 0 / 0.28);
+  --lg-tint-strong: oklch(0.99 0.01 150 / 0.72);
+  --lg-bright: 1.06;
+  --lg-sheen: oklch(1 0 0 / 0.55);
+  --lg-sheen-2: oklch(1 0 0 / 0.18);
+  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.85), inset -1px -1px 0 0 oklch(1 0 0 / 0.4), inset 0 0 18px 0 oklch(1 0 0 / 0.35);
+  --lg-shadow: 0 10px 36px -10px oklch(0.35 0.1 155 / 0.25), 0 2px 6px -2px oklch(0.35 0.1 155 / 0.12);
 }
 
 .dark {
@@ -63,6 +71,14 @@
   --blob-2: oklch(0.55 0.13 125 / 0.2);
   --blob-3: oklch(0.45 0.09 195 / 0.25);
   --grid-line: oklch(1 0 0 / 0.04);
+
+  --lg-tint: oklch(0.25 0.03 160 / 0.32);
+  --lg-tint-strong: oklch(0.2 0.025 160 / 0.78);
+  --lg-bright: 0.9;
+  --lg-sheen: oklch(1 0 0 / 0.14);
+  --lg-sheen-2: oklch(1 0 0 / 0.05);
+  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.22), inset -1px -1px 0 0 oklch(1 0 0 / 0.08), inset 0 0 18px 0 oklch(1 0 0 / 0.06);
+  --lg-shadow: 0 14px 44px -12px oklch(0 0 0 / 0.65), 0 2px 8px -2px oklch(0 0 0 / 0.4);
 }
 
 @theme inline {
@@ -120,19 +136,59 @@
   }
 }
 
-/* ---------------- Glass surfaces ---------------- */
+/* ---------------- Liquid glass ----------------
+   ::before  blurred backdrop pushed through #lg-distort (SVG displacement) = refraction
+   ::after   specular rim + sheen that catches light on the top-left edge
+   Browsers without SVG filter support still get the plain frosted blur. */
 @utility glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(18px) saturate(170%);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  /* the element must be positioned (relative/absolute/fixed/sticky) for the layers below */
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--lg-tint);
+  box-shadow: var(--lg-shadow);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    backdrop-filter: blur(var(--lg-blur, 8px)) saturate(180%) brightness(var(--lg-bright));
+    -webkit-backdrop-filter: blur(var(--lg-blur, 8px)) saturate(180%) brightness(var(--lg-bright));
+    filter: url(#lg-distort);
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: var(--lg-rim);
+    background: linear-gradient(135deg, var(--lg-sheen) 0%, transparent 38%, transparent 70%, var(--lg-sheen-2) 100%);
+  }
 }
 @utility glass-strong {
-  background: var(--popover);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  @apply glass;
+  --lg-blur: 26px;
+  background: var(--lg-tint-strong);
+}
+/* Glossy filled droplet for active pills */
+@utility liquid-drop {
+  box-shadow:
+    inset 0 1.5px 0 0 oklch(1 0 0 / 0.5),
+    inset 0 -2px 6px 0 oklch(0 0 0 / 0.12),
+    inset 0 0 12px 0 oklch(1 0 0 / 0.18),
+    0 8px 20px -6px color-mix(in oklch, var(--primary) 60%, transparent);
+  background-image: linear-gradient(180deg, oklch(1 0 0 / 0.22), transparent 55%);
+}
+/* Same look minus the distortion filter — for many or constantly moving elements. */
+@utility glass-lite {
+  position: relative;
+  background: var(--lg-tint);
+  box-shadow: var(--lg-shadow), var(--lg-rim);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
 }
 @utility glass-card {
   background: var(--card);
@@ -195,11 +251,20 @@
   }
 }
 
-/* html5-qrcode injects its own video element */
+/* html5-qrcode injects its own video + shaded scan box; fill the frame and hide its overlay
+   so only our viewfinder shows. */
+#qr-reader {
+  border: 0 !important;
+}
 #qr-reader video {
   width: 100% !important;
+  height: 100% !important;
   display: block;
   object-fit: cover;
+}
+#qr-reader #qr-shaded-region,
+#qr-reader img {
+  display: none !important;
 }
 
 @media print {

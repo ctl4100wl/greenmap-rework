@@ -91,9 +91,9 @@ export function TreesPage() {
       />
 
       <Reveal delay={0.12}>
-        <div className="glass sticky top-[88px] z-30 mb-8 flex flex-col gap-3 rounded-3xl p-3 md:flex-row md:items-center">
-          <div className="relative md:w-80">
-            <SearchIcon className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="glass sticky top-[88px] z-30 mb-8 flex flex-col gap-3 rounded-3xl p-3 md:flex-row md:items-start">
+          <div className="relative shrink-0 md:w-72">
+            <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -106,7 +106,8 @@ export function TreesPage() {
               </button>
             )}
           </div>
-          <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:pb-0 [scrollbar-width:none]">
+          {/* wraps instead of scrolling sideways, so no family is ever cut off */}
+          <div className="flex flex-wrap gap-1.5 md:pt-0.5">
             {[["", data.trees.length] as const, ...families].map(([f, n]) => {
               const on = (family ?? "") === f;
               return (
@@ -118,8 +119,10 @@ export function TreesPage() {
                     on ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {on && <motion.span layoutId="fam-pill" className="absolute inset-0 -z-10 rounded-full bg-primary" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
-                  {f ? f.replace(/\s*\(.*\)/, "") : "Tất cả"} <span className="opacity-60">{n}</span>
+                  {on && <motion.span layoutId="fam-pill" className="liquid-drop absolute inset-0 rounded-full bg-primary" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
+                  <span className="relative">
+                    {f ? f.replace(/\s*\(.*\)/, "") : "Tất cả"} <span className="opacity-60">{n}</span>
+                  </span>
                 </button>
               );
             })}
@@ -127,13 +130,13 @@ export function TreesPage() {
         </div>
       </Reveal>
 
-      <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <AnimatePresence mode="popLayout">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <AnimatePresence mode="popLayout" initial={false}>
           {list.map((t, i) => (
-            <TreeCard key={t.slug} tree={t} index={i} />
+            <TreeCard key={t.slug} tree={t} index={i} instant />
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
       {!list.length && (
         <div className="py-20 text-center text-muted-foreground">Không tìm thấy cây nào.</div>
       )}

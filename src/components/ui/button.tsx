@@ -13,7 +13,7 @@ const buttonVariants = cva(
         glow:
           "text-white bg-[linear-gradient(110deg,var(--color-emerald-600),var(--color-green-500),var(--color-lime-500),var(--color-emerald-600))] bg-[length:200%_100%] animate-[shine_6s_linear_infinite] shadow-[0_10px_30px_-8px] shadow-emerald-500/60 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-10px] hover:shadow-emerald-500/70",
         secondary:
-          "glass text-foreground hover:bg-foreground/[0.06] hover:-translate-y-0.5",
+          "glass text-foreground hover:-translate-y-0.5 hover:brightness-105",
         outline:
           "border border-border bg-background/40 backdrop-blur-md hover:bg-accent hover:text-accent-foreground",
         ghost: "hover:bg-foreground/[0.06] text-foreground",

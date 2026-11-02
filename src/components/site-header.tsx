@@ -65,8 +65,8 @@ export function SiteHeader() {
     <header className="noprint sticky top-0 z-50 px-3 pt-3 sm:px-5">
       <div
         className={cn(
-          "mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full px-3 pl-5 transition-all duration-500 ease-out-expo",
-          stuck ? "glass" : "border border-transparent",
+          "glass relative mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full px-3 pl-5 transition-shadow duration-500 ease-out-expo",
+          stuck && "shadow-2xl",
         )}
       >
         <Link to="/" className="group flex shrink-0 items-center gap-2.5 font-extrabold tracking-wide text-primary">
@@ -89,11 +89,11 @@ export function SiteHeader() {
               {active(n.to) && (
                 <motion.span
                   layoutId="nav-pill"
-                  className="absolute inset-0 -z-10 rounded-full bg-primary shadow-lg shadow-primary/30"
+                  className="liquid-drop absolute inset-0 rounded-full bg-primary"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
-              {n.label}
+              <span className="relative">{n.label}</span>
             </NavLink>
           ))}
         </nav>
@@ -154,7 +154,7 @@ export function SiteFooter() {
   const data = useData();
   return (
     <footer className="noprint mt-24 px-3 pb-6 sm:px-5">
-      <div className="glass mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 rounded-3xl px-6 py-6 text-sm sm:flex-row">
+      <div className="glass relative mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 rounded-3xl px-6 py-6 text-sm sm:flex-row">
         <div className="flex items-center gap-2.5 font-bold text-primary">
           <LeafLogo className="size-5" />
           {data.brand}

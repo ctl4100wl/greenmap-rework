@@ -103,15 +103,17 @@ export function TreeImage({ src, alt, className }: { src?: string; alt: string; 
   );
 }
 
-export function TreeCard({ tree, index = 0, large = false }: { tree: Tree; index?: number; large?: boolean }) {
+/** `instant` animates in on mount instead of on scroll — needed in filtered lists, where
+ *  scroll-triggered reveals can leave re-added cards stuck invisible. */
+export function TreeCard({ tree, index = 0, large = false, instant = false }: { tree: Tree; index?: number; large?: boolean; instant?: boolean }) {
+  const shown = { opacity: 1, y: 0, scale: 1 };
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: 0.94, filter: "blur(8px)" }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.6, delay: Math.min(index, 8) * 0.05, ease: [0.22, 0.9, 0.3, 1] }}
+      layout={instant ? "position" : false}
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      {...(instant ? { animate: shown } : { whileInView: shown, viewport: { once: true, margin: "-40px" } })}
+      exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.2 } }}
+      transition={{ duration: 0.5, delay: instant ? Math.min(index, 12) * 0.035 : Math.min(index, 8) * 0.05, ease: [0.22, 0.9, 0.3, 1] }}
       className={cn("h-full", large && "sm:col-span-2 sm:row-span-2")}
     >
       <Spotlight className="h-full rounded-3xl">

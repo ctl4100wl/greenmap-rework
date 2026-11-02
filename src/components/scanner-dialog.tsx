@@ -41,7 +41,8 @@ export function ScannerDialog() {
       try {
         await s.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 230, height: 230 } },
+          // No qrbox: the library would draw its own shaded box and corners over ours.
+          { fps: 10, aspectRatio: 1 },
           (text) => {
             const m = String(text).match(/#\/cay\/([a-z0-9-]+)/i);
             if (m && data.trees.some((t) => t.slug === m[1])) {
@@ -90,7 +91,7 @@ export function ScannerDialog() {
           <DialogTitle className="text-[17px] font-bold">Quét mã QR trên cây</DialogTitle>
         </div>
         <div className="relative mx-4 aspect-square overflow-hidden rounded-2xl bg-black">
-          <div id="qr-reader" className="size-full" />
+          <div id="qr-reader" className="absolute inset-0" />
           {/* viewfinder corners + sweeping line */}
           <div className="pointer-events-none absolute inset-[14%]">
             {["top-0 left-0 border-t-4 border-l-4 rounded-tl-2xl", "top-0 right-0 border-t-4 border-r-4 rounded-tr-2xl", "bottom-0 left-0 border-b-4 border-l-4 rounded-bl-2xl", "right-0 bottom-0 border-r-4 border-b-4 rounded-br-2xl"].map((c) => (

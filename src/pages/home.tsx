@@ -130,7 +130,7 @@ export default function HomePage() {
             <Link
               key={i}
               to={`/cay/${t.slug}`}
-              className="glass flex items-center gap-3 rounded-full py-1.5 pr-5 pl-1.5 transition hover:scale-105"
+              className="glass-lite flex items-center gap-3 rounded-full py-1.5 pr-5 pl-1.5 transition hover:scale-105"
             >
               <img src={t.imgs[0]} alt="" className="size-9 rounded-full object-cover" loading="lazy" />
               <span className="font-semibold whitespace-nowrap">{t.name}</span>

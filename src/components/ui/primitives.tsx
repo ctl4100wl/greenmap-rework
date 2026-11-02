@@ -24,7 +24,7 @@ const badgeVariants = cva(
       variant: {
         default: "bg-primary/12 text-primary ring-1 ring-inset ring-primary/20",
         solid: "bg-primary text-primary-foreground",
-        glass: "glass text-foreground",
+        glass: "glass relative text-foreground",
         outline: "ring-1 ring-inset ring-border text-muted-foreground",
       },
       size: {
