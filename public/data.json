@@ -211,8 +211,10 @@
       "funLabel": ""
     }
   ],
-  "pages": {
-    "about": "<style>* { box-sizing: border-box; } body {margin: 0;}*{box-sizing:border-box;}body{margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;}.reveal.about-mission{font-size:20px;font-family:\"Comic Sans MS\", cursive, sans-serif;}#iwbf{margin-top:10px;margin-right:0px;margin-bottom:10px;margin-left:0px;}</style>\n<body><div class=\"wrap page\"><h1>Về dự án</h1><p class=\"reveal about-mission\">Dự án do Đỗ Mạnh Khang và Nguyễn Minh Đăng thực hiện<br/>Được phụ trách bởi Ms. Ngọc</p><p id=\"iwbf\">Được làm bằng HTML/CSS/JS, Hosting: GitHub Pages <br/>Library:<b> jsdelivr, CloudFlare, unPkg </b>: GrapesJS, npm/qrcode </p></div></body>"
-  },
-  "font": "\"Be Vietnam Pro\", system-ui, sans-serif"
+  "font": "\"Be Vietnam Pro\", system-ui, sans-serif",
+  "credits": [
+    "Dự án do Đỗ Mạnh Khang và Nguyễn Minh Đăng thực hiện",
+    "Được phụ trách bởi Ms. Ngọc"
+  ],
+  "tech": "Được làm bằng React, TypeScript, Tailwind CSS và shadcn/ui. Hosting: GitHub Pages. Thư viện: Vite, Motion, npm/qrcode, html5-qrcode."
 }
