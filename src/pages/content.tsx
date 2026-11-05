@@ -91,7 +91,7 @@ export function TreesPage() {
       />
 
       <Reveal delay={0.12}>
-        <div className="glass sticky top-[88px] z-30 mb-8 flex flex-col gap-3 rounded-3xl p-3 md:flex-row md:items-start">
+        <div className="glass relative z-30 mb-8 md:sticky md:top-[88px] flex flex-col gap-3 rounded-3xl p-3 md:flex-row md:items-start">
           <div className="relative shrink-0 md:w-72">
             <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input

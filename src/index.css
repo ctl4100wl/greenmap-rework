@@ -34,13 +34,15 @@
   --blob-3: oklch(0.85 0.09 190 / 0.4);
   --grid-line: oklch(0.3 0.06 155 / 0.06);
 
-  --lg-tint: oklch(1 0 0 / 0.28);
-  --lg-tint-strong: oklch(0.99 0.01 150 / 0.72);
-  --lg-bright: 1.06;
-  --lg-sheen: oklch(1 0 0 / 0.55);
-  --lg-sheen-2: oklch(1 0 0 / 0.18);
-  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.85), inset -1px -1px 0 0 oklch(1 0 0 / 0.4), inset 0 0 18px 0 oklch(1 0 0 / 0.35);
-  --lg-shadow: 0 10px 36px -10px oklch(0.35 0.1 155 / 0.25), 0 2px 6px -2px oklch(0.35 0.1 155 / 0.12);
+  --lg-clear: oklch(1 0 0 / 0.32);
+  --lg-tint: oklch(1 0 0 / 0.3);
+  --lg-tint-strong: oklch(0.99 0.01 150 / 0.75);
+  --lg-bright: 1.08;
+  --lg-rim-hi: oklch(1 0 0 / 0.95);
+  --lg-rim-lo: oklch(1 0 0 / 0.6);
+  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.85), inset -1px -1px 0 0 oklch(1 0 0 / 0.4);
+  --lg-inner: inset 0 1px 12px 0 oklch(1 0 0 / 0.35), inset 0 -8px 18px -12px oklch(1 0 0 / 0.5);
+  --lg-shadow: 0 12px 40px -12px oklch(0.3 0.08 155 / 0.3), 0 2px 6px -2px oklch(0.3 0.08 155 / 0.15);
 }
 
 .dark {
@@ -72,13 +74,15 @@
   --blob-3: oklch(0.45 0.09 195 / 0.25);
   --grid-line: oklch(1 0 0 / 0.04);
 
-  --lg-tint: oklch(0.25 0.03 160 / 0.32);
-  --lg-tint-strong: oklch(0.2 0.025 160 / 0.78);
-  --lg-bright: 0.9;
-  --lg-sheen: oklch(1 0 0 / 0.14);
-  --lg-sheen-2: oklch(1 0 0 / 0.05);
-  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.22), inset -1px -1px 0 0 oklch(1 0 0 / 0.08), inset 0 0 18px 0 oklch(1 0 0 / 0.06);
-  --lg-shadow: 0 14px 44px -12px oklch(0 0 0 / 0.65), 0 2px 8px -2px oklch(0 0 0 / 0.4);
+  --lg-clear: oklch(0.18 0.03 160 / 0.42);
+  --lg-tint: oklch(0.25 0.03 160 / 0.35);
+  --lg-tint-strong: oklch(0.2 0.025 160 / 0.8);
+  --lg-bright: 0.92;
+  --lg-rim-hi: oklch(1 0 0 / 0.5);
+  --lg-rim-lo: oklch(1 0 0 / 0.22);
+  --lg-rim: inset 1.5px 1.5px 0 0 oklch(1 0 0 / 0.22), inset -1px -1px 0 0 oklch(1 0 0 / 0.08);
+  --lg-inner: inset 0 1px 12px 0 oklch(1 0 0 / 0.08), inset 0 -8px 18px -12px oklch(1 0 0 / 0.14);
+  --lg-shadow: 0 16px 48px -14px oklch(0 0 0 / 0.7), 0 2px 8px -2px oklch(0 0 0 / 0.4);
 }
 
 @theme inline {
@@ -136,27 +140,42 @@
   }
 }
 
-/* ---------------- Liquid glass ----------------
-   ::before  blurred backdrop pushed through #lg-distort (SVG displacement) = refraction
-   ::after   specular rim + sheen that catches light on the top-left edge
-   Browsers without SVG filter support still get the plain frosted blur. */
+/* ---------------- Liquid glass (see components/liquid-glass.tsx) ----------------
+   __lens  the backdrop, refracted by the element's SVG lens filter (Chromium) or frosted
+   __rim   specular edge: a gradient ring lit at the top-left and bottom-right */
+.liquid-glass {
+  box-shadow: var(--lg-shadow);
+}
+.liquid-glass__lens,
+.liquid-glass__rim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.liquid-glass__lens {
+  overflow: hidden;
+  background: var(--lg-clear);
+  box-shadow: var(--lg-inner);
+  backdrop-filter: blur(14px) saturate(1.7) brightness(var(--lg-bright));
+  -webkit-backdrop-filter: blur(14px) saturate(1.7) brightness(var(--lg-bright));
+}
+.liquid-glass__rim {
+  padding: 1.5px;
+  background: linear-gradient(135deg, var(--lg-rim-hi) 0%, transparent 28%, transparent 62%, var(--lg-rim-lo) 100%);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+/* Frosted glass with the same lit rim — for dialogs, buttons and small chips. */
 @utility glass {
-  /* the element must be positioned (relative/absolute/fixed/sticky) for the layers below */
+  /* the element must be positioned (relative/absolute/fixed/sticky) */
   isolation: isolate;
   overflow: hidden;
   background: var(--lg-tint);
-  box-shadow: var(--lg-shadow);
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    backdrop-filter: blur(var(--lg-blur, 8px)) saturate(180%) brightness(var(--lg-bright));
-    -webkit-backdrop-filter: blur(var(--lg-blur, 8px)) saturate(180%) brightness(var(--lg-bright));
-    filter: url(#lg-distort);
-    pointer-events: none;
-  }
+  box-shadow: var(--lg-shadow), var(--lg-inner);
+  backdrop-filter: blur(var(--lg-blur, 16px)) saturate(1.7) brightness(var(--lg-bright));
+  -webkit-backdrop-filter: blur(var(--lg-blur, 16px)) saturate(1.7) brightness(var(--lg-bright));
   &::after {
     content: "";
     position: absolute;
@@ -164,13 +183,14 @@
     z-index: -1;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: var(--lg-rim);
-    background: linear-gradient(135deg, var(--lg-sheen) 0%, transparent 38%, transparent 70%, var(--lg-sheen-2) 100%);
+    padding: 1.5px;
+    background: linear-gradient(135deg, var(--lg-rim-hi) 0%, transparent 28%, transparent 62%, var(--lg-rim-lo) 100%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   }
 }
 @utility glass-strong {
   @apply glass;
-  --lg-blur: 26px;
+  --lg-blur: 28px;
   background: var(--lg-tint-strong);
 }
 /* Glossy filled droplet for active pills */
@@ -270,4 +290,19 @@
 @media print {
   .noprint { display: none !important; }
   body { background: #fff !important; }
+}
+
+/* Phones: live backdrop blur on many layers is the main scroll cost, so cards go solid. */
+@media (hover: none), (pointer: coarse) {
+  .glass-card,
+  .glass-lite {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .glass-card {
+    background: color-mix(in oklch, var(--background) 82%, transparent);
+  }
+  .glass-lite {
+    background: color-mix(in oklch, var(--background) 70%, transparent);
+  }
 }

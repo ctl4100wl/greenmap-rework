@@ -1,28 +1,46 @@
+import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
+import { MeshGradient } from "@paper-design/shaders-react";
+import { useTheme } from "@/lib/theme";
+import { finePointer } from "@/lib/utils";
 
-/** Fixed aurora blobs + faint grid behind every page. */
+const PALETTES = {
+  light: ["#f0fdf4", "#bbf7d0", "#4ade80", "#d9f99d", "#a7f3d0", "#ecfccb"],
+  dark: ["#021a0f", "#064e3b", "#15803d", "#0b3b2e", "#365314", "#022c22"],
+};
+
+/** Animated WebGL mesh gradient (Paper Shaders) with a leaf-vein grid on top for the glass to bend. */
 export function Backdrop() {
+  const { theme } = useTheme();
+  const [still, setStill] = useState(false);
+  useEffect(() => {
+    const mq = matchMedia("(prefers-reduced-motion: reduce)");
+    setStill(mq.matches);
+    const on = () => setStill(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
-      <div className="absolute -top-[20vh] -left-[10vw] size-[60vw] max-w-[820px] max-h-[820px] rounded-full bg-[var(--blob-1)] blur-[100px] animate-[blob_22s_ease-in-out_infinite]" />
-      <div className="absolute top-[10vh] -right-[15vw] size-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-[var(--blob-2)] blur-[110px] animate-[blob_28s_ease-in-out_infinite_reverse]" />
-      <div className="absolute bottom-[-25vh] left-[25vw] size-[45vw] max-w-[640px] max-h-[640px] rounded-full bg-[var(--blob-3)] blur-[120px] animate-[blob_32s_ease-in-out_infinite]" />
-      {/* film grain keeps big gradients from banding */}
-      <svg className="absolute inset-0 size-full opacity-[0.035] mix-blend-overlay dark:opacity-[0.06]">
-        <filter id="grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#grain)" />
-      </svg>
-      {/* liquid glass refraction, referenced by the .glass utility */}
-      <svg width="0" height="0" className="absolute">
-        <filter id="lg-distort" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise" />
-          <feGaussianBlur in="noise" stdDeviation="2.5" result="soft" />
-          <feDisplacementMap in="SourceGraphic" in2="soft" scale="46" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-background">
+      {/* CSS blobs paint first, so there is colour even if WebGL is unavailable */}
+      <div className="absolute -top-[20vh] -left-[10vw] size-[60vw] rounded-full bg-[var(--blob-1)] blur-[100px]" />
+      <div className="absolute bottom-[-25vh] right-[0vw] size-[50vw] rounded-full bg-[var(--blob-2)] blur-[110px]" />
+      <MeshGradient
+        key={theme}
+        colors={PALETTES[theme]}
+        distortion={0.85}
+        swirl={0.55}
+        grainMixer={0}
+        grainOverlay={0.06}
+        speed={still || !finePointer ? 0 : 0.22}
+        minPixelRatio={1}
+        maxPixelCount={finePointer ? 1280 * 720 : 480 * 800}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+      />
+      {/* soften the middle so text stays readable */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,var(--background)_0%,transparent_100%)] opacity-60 dark:opacity-50" />
+      <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_80%)]" />
     </div>
   );
 }

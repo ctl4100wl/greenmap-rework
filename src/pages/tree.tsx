@@ -1,3 +1,4 @@
+import { soft } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
@@ -51,9 +52,9 @@ function Gallery({ tree }: { tree: Tree }) {
                 alt={tree.name}
                 custom={dir}
                 variants={{
-                  enter: (d: number) => ({ x: d * 60, opacity: 0, scale: 1.04, filter: "blur(12px)" }),
-                  center: { x: 0, opacity: 1, scale: 1, filter: "blur(0px)" },
-                  exit: (d: number) => ({ x: d * -60, opacity: 0, filter: "blur(12px)" }),
+                  enter: (d: number) => ({ x: d * 60, opacity: 0, scale: 1.04, ...soft(12) }),
+                  center: { x: 0, opacity: 1, scale: 1, ...soft(0) },
+                  exit: (d: number) => ({ x: d * -60, opacity: 0, ...soft(12) }),
                 }}
                 initial="enter"
                 animate="center"

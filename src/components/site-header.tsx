@@ -1,3 +1,4 @@
+import { soft } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
@@ -5,6 +6,7 @@ import { MenuIcon, MoonIcon, ScanLineIcon, SearchIcon, SunIcon, XIcon } from "lu
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/primitives";
 import { LeafLogo } from "@/components/backdrop";
+import { LiquidGlass } from "@/components/liquid-glass";
 import { useData } from "@/lib/data";
 import { useTheme } from "@/lib/theme";
 import { useUI } from "@/lib/ui";
@@ -63,9 +65,11 @@ export function SiteHeader() {
 
   return (
     <header className="noprint sticky top-0 z-50 px-3 pt-3 sm:px-5">
-      <div
+      <LiquidGlass
+        bezel={22}
+        strength={36}
         className={cn(
-          "glass relative mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full px-3 pl-5 transition-shadow duration-500 ease-out-expo",
+          "mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full px-3 pl-5 transition-shadow duration-500 ease-out-expo",
           stuck && "shadow-2xl",
         )}
       >
@@ -101,7 +105,7 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-0 sm:gap-1 md:ml-0">
           <button
             onClick={() => setSearchOpen(true)}
-            className="hidden h-10 cursor-pointer items-center gap-2 rounded-full border border-border bg-background/40 pr-2 pl-3.5 text-sm text-muted-foreground transition hover:border-primary/40 hover:text-foreground lg:flex"
+            className="hidden h-10 cursor-pointer items-center gap-2 rounded-full border border-white/25 bg-foreground/[0.04] pr-2 pl-3.5 dark:border-white/10 text-sm text-muted-foreground transition hover:border-primary/40 hover:text-foreground lg:flex"
           >
             <SearchIcon className="size-4" />
             <span className="pr-6">Tìm cây…</span>
@@ -119,14 +123,14 @@ export function SiteHeader() {
             {open ? <XIcon className="size-5" /> : <MenuIcon className="size-5" />}
           </Button>
         </div>
-      </div>
+      </LiquidGlass>
 
       <AnimatePresence>
         {open && (
           <motion.nav
-            initial={{ opacity: 0, y: -10, scale: 0.98, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -10, scale: 0.98, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: -10, scale: 0.98, ...soft(6) }}
+            animate={{ opacity: 1, y: 0, scale: 1, ...soft(0) }}
+            exit={{ opacity: 0, y: -10, scale: 0.98, ...soft(6) }}
             transition={{ duration: 0.25 }}
             className="glass-strong absolute inset-x-3 top-[84px] flex flex-col gap-1 rounded-3xl p-2 shadow-2xl md:hidden"
           >

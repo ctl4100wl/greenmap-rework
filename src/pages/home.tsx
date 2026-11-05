@@ -1,3 +1,4 @@
+import { soft } from "@/lib/utils";
 import { useRef } from "react";
 import { Link } from "react-router";
 import { motion, useScroll, useTransform } from "motion/react";
@@ -10,8 +11,8 @@ import { useData } from "@/lib/data";
 import { useUI } from "@/lib/ui";
 
 const rise = (i: number) => ({
-  initial: { opacity: 0, y: 24, filter: "blur(10px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  initial: { opacity: 0, y: 24, ...soft(10) },
+  animate: { opacity: 1, y: 0, ...soft(0) },
   transition: { duration: 0.8, delay: 0.1 + i * 0.08, ease: [0.22, 0.9, 0.3, 1] as const },
 });
 
@@ -69,8 +70,8 @@ export default function HomePage() {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.94, filter: "blur(16px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            initial={{ opacity: 0, scale: 0.94, ...soft(16) }}
+            animate={{ opacity: 1, scale: 1, ...soft(0) }}
             transition={{ duration: 1.1, ease: [0.22, 0.9, 0.3, 1] }}
             className="relative"
           >

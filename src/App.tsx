@@ -1,3 +1,4 @@
+import { soft } from "@/lib/utils";
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { HashRouter, Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
@@ -31,9 +32,9 @@ const TITLES: Record<string, string> = {
 function Page({ children }: { children: ReactNode }) {
   return (
     <motion.main
-      initial={{ opacity: 0, y: 14, filter: "blur(10px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, y: -8, filter: "blur(10px)" }}
+      initial={{ opacity: 0, y: 14, ...soft(10) }}
+      animate={{ opacity: 1, y: 0, ...soft(0) }}
+      exit={{ opacity: 0, y: -8, ...soft(10) }}
       transition={{ duration: 0.45, ease: [0.22, 0.9, 0.3, 1] }}
       className="min-h-[60vh]"
     >
